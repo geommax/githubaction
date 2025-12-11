@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-config
     steps:
-      - name: 🚀 Run Tests with Configured Command
+      - name: Run Tests with Configured Command
         run: |
           # The full context path is needs.<job-id>.outputs.<output-id>
           TEST_CMD="${{ needs.prepare-config.outputs.test-command }}"
