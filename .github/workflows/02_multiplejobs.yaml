@@ -40,8 +40,8 @@ jobs:
         id: set_output
         run: |
           echo "MY_CONFIG_VERSION=v1.2.3" >> $GITHUB_ENV
-          echo "configured_command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
-          echo "configured_command= hello configured command" >> $GITHUB_OUTPUT
+          echo "configured_command1=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
+          echo "configured_command2= hello configured command" >> $GITHUB_OUTPUT
           echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
       
       - name: Use Step Environment Variable
@@ -55,5 +55,6 @@ jobs:
       - name: Run Tests with Configured Command
         run: |
           echo "Using test command: ${{ needs.prepare-config.outputs.test_command }}"
-          echo "Using Configured command: ${{ needs.prepare-config.outputs.configured_command }}"
+          echo "Using Configured command: ${{ needs.prepare-config.outputs.configured_command1 }}"
+          echo "Using Configured command: ${{ needs.prepare-config.outputs.configured_command2 }}"
           echo "Using config version: ${{ needs.prepare-config.outputs.config_version }}"
