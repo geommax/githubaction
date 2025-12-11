@@ -47,7 +47,7 @@ jobs:
           echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
       
       - name: Use Step Environment Variable
-        run: echo "Configuration version: $MY_CONFIG_VERSION"
+        run: echo "Configuration version $MY_CONFIG_VERSION"
 
   run-tests:
     name: Run Unit Tests
