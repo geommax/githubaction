@@ -16,8 +16,8 @@ jobs:
     name: Prepare Configuration
     runs-on: ubuntu-latest
     outputs:
-      test-command: ${{ steps.set-output.outputs.configured-command }}
-      config-version: ${{ steps.set-output.outputs.version }}
+      test_command: ${{ steps.set_output.outputs.configured_command }}
+      config_version: ${{ steps.set_output.outputs.config_version }}
     env:
       BUILD_ENV_STAGE: 'staging'
       TEST_FRAMEWORK_FLAG: '--silent'
@@ -37,14 +37,14 @@ jobs:
           echo "---------------------------"
 
       - name: Set Job Outputs and Step Environment Variable
-        id: set-output
+        id: set_output
         run: |
           # 1. Set a STEP-LEVEL env var for use in later steps within this job
           echo "MY_CONFIG_VERSION=v1.2.3" >> $GITHUB_ENV
           
           # 2. Set an OUTPUT variable for use in dependent jobs (Job 2)
-          echo "configured-command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
-          echo "version=v1.2.3" >> $GITHUB_OUTPUT
+          echo "configured_command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
+          echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
       
       - name: Use Step Environment Variable
         run: echo "Configuration version: $MY_CONFIG_VERSION"
@@ -57,8 +57,8 @@ jobs:
       - name: Run Tests with Configured Command
         run: |
           # The full context path is needs.<job-id>.outputs.<output-id>
-          TEST_CMD="${{ needs.prepare-config.outputs.test-command }}"
-          CONFIG_VER="${{ needs.prepare-config.outputs.config-version }}"
+          TEST_CMD="${{ needs.prepare-config.outputs.test_command }}"
+          CONFIG_VER="${{ needs.prepare-config.outputs.config_version }}"
           
           echo "--- Running Tests ---"
           echo "Project: $PROJECT_NAME" # Uses Workflow-Level Env
