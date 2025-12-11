@@ -1,0 +1,49 @@
+# Lesson 01: Hello World - Your First GitHub Actions Workflow
+# 
+# Concepts covered:
+# - Basic workflow syntax
+# - workflow name
+# - trigger event (on)
+# - jobs
+# - steps
+# - runs-on (runner)
+# - Simple shell commands
+
+name: Lesson 01 - Hello World
+
+# When should this workflow run?
+on:
+  workflow_dispatch:  # Manual trigger from GitHub UI
+  # Trigger on push to main or develop branches
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  
+  # Trigger on pull requests to main
+  pull_request:
+    branches:
+      - main
+  
+jobs:
+  hello-job:
+    name: Say Hello
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Print greeting
+        run: echo "Hello, GitHub Actions!"
+      
+      - name: Print date
+        run: date
+      
+      - name: Print working directory
+        run: pwd
+      
+      - name: List files
+        run: |
+          echo "Listing files in current directory:"
+          ls -la
