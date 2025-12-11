@@ -1,10 +1,7 @@
 name: Lesson 02 - local, global env vars, job outputs
 
 on:
-  push:
-    branches:
-      - main
-      - develop
+  workflow_dispatch:
 
 env:
   PROJECT_NAME: 'my project alpha'
