@@ -1,4 +1,4 @@
-name: 02 env variables and multiple jobs
+name: Lesson 02 - local, global env vars, job outputs
 
 on:
   push:
@@ -54,4 +54,5 @@ jobs:
       - name: Run Tests with Configured Command
         run: |
           echo "Using test command: ${{ needs.prepare-config.outputs.test_command }}"
+          echo "Using Configured command: ${{ needs.prepare-config.outputs.configured_command }}"
           echo "Using config version: ${{ needs.prepare-config.outputs.config_version }}"
