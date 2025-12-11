@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       test_command: ${{ steps.set_output.outputs.configured_command }}
-      config_version: ${{ steps.set_output.outputs.config_version }}
+      myconfig_version: ${{ steps.set_output.outputs.config_version }}
     env:
       BUILD_ENV_STAGE: 'staging'
       TEST_FRAMEWORK_FLAG: '--silent'
@@ -40,10 +40,10 @@ jobs:
         id: set_output
         run: |
           echo "MY_CONFIG_VERSION=v1.2.3" >> $GITHUB_ENV
-          # echo "configured_command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
-          # echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
-          configured_command="$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG"
-          config_version="v1.2.3"
+          echo "configured_command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
+          echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
+          # configured_command="$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG"
+          # config_version="v1.2.3"
       
       - name: Use Step Environment Variable
         run: echo "Configuration version $MY_CONFIG_VERSION"
@@ -57,4 +57,4 @@ jobs:
         run: |
           echo "output from prepare-config job:"
           echo "Using test command: ${{ needs.prepare-config.outputs.test_command }}"
-          echo "Using config version: ${{ needs.prepare-config.outputs.config_version }}"
+          echo "Using config version: ${{ needs.prepare-config.outputs.myconfig_version }}"
