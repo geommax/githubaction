@@ -59,6 +59,8 @@ jobs:
       - name: Create build artifact
         run: |
           mkdir -p build-output
+          cp hello.py build-output/
+          cp hello.js build-output/
           echo "Build timestamp: $(date)" > build-output/build-info.txt
           echo "Commit: ${{ github.sha }}" >> build-output/build-info.txt
           echo "Branch: ${{ github.ref_name }}" >> build-output/build-info.txt

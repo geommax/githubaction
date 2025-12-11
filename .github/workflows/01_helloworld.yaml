@@ -3,17 +3,17 @@ name: Lesson 01 - Hello World
 
 on:
   workflow_dispatch:  
-  push:
-    branches:
-      - main
-      - develop
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #   paths-ignore:
+  #     - '**.md'
+  #     - 'docs/**'
   
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
   
 jobs:
   hello-job:
