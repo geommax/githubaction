@@ -1,10 +1,10 @@
 name: Lesson 03 - Multiple Triggers and Jobs Demo
 
 on:
-  push:
-    branches:
-      - main
-      - 'feature/*'
+  # push:
+  #   branches:
+  #     - main
+  #     - 'feature/*'
   workflow_dispatch:
     inputs:
       run_tests:

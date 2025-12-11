@@ -1,0 +1,93 @@
+# Lesson 05: Using Actions
+#
+# Concepts covered:
+# - Using marketplace actions
+# - actions/checkout
+# - actions/setup-node
+# - actions/upload-artifact
+# - actions/download-artifact
+# - Custom action parameters
+
+name: Lesson 05 - Using Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  use-actions:
+    name: Demonstrate Common Actions
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Action 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history
+      
+      # Action 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      # Action 3: Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Show Node.js and Python versions
+        run: |
+          echo "Node.js version:"
+          node --version
+          echo "npm version:"
+          npm --version
+          echo "Python version:"
+          python --version
+      
+      - name: Create sample Node.js app
+        run: |
+          echo "console.log('Hello from Node.js!');" > hello.js
+          node hello.js
+      
+      - name: Create sample Python script
+        run: |
+          echo "print('Hello from Python!')" > hello.py
+          python hello.py
+      
+      - name: Create build artifact
+        run: |
+          mkdir -p build-output
+          echo "Build timestamp: $(date)" > build-output/build-info.txt
+          echo "Commit: ${{ github.sha }}" >> build-output/build-info.txt
+          echo "Branch: ${{ github.ref_name }}" >> build-output/build-info.txt
+      
+      # Action 4: Upload artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build-output/
+          retention-days: 5
+  
+  download-and-verify:
+    name: Download and Verify Artifact
+    runs-on: ubuntu-latest
+    needs: use-actions
+    
+    steps:
+      # Action 5: Download artifact from previous job
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: downloaded-artifacts/
+      
+      - name: Verify artifact contents
+        run: |
+          echo "Contents of downloaded artifact:"
+          cat downloaded-artifacts/build-info.txt
+      
+      - name: List all files
+        run: ls -R downloaded-artifacts/
