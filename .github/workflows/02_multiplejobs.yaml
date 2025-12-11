@@ -42,6 +42,8 @@ jobs:
           echo "MY_CONFIG_VERSION=v1.2.3" >> $GITHUB_ENV
           # echo "configured_command=$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG" >> $GITHUB_OUTPUT
           # echo "config_version=v1.2.3" >> $GITHUB_OUTPUT
+          configured_command="$DEFAULT_TEST_RUNNER --coverage $TEST_FRAMEWORK_FLAG"
+          config_version="v1.2.3"
       
       - name: Use Step Environment Variable
         run: echo "Configuration version $MY_CONFIG_VERSION"
