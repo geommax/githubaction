@@ -1,0 +1,297 @@
+name: lesson 07 Matrix Strategies Demo
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ============================================================================
+  # Basic Matrix - Testing across multiple versions
+  # ============================================================================
+  basic-matrix:
+    name: Basic Matrix - Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Display Node version
+        run: |
+          echo "Running on Node.js version:"
+          node --version
+          npm --version
+
+  # ============================================================================
+  # Multi-dimensional Matrix - OS and Language versions
+  # ============================================================================
+  multi-dimensional-matrix:
+    name: ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Display Python info
+        run: |
+          python --version
+          pip --version
+
+  # ============================================================================
+  # Matrix with Include - Add specific combinations
+  # ============================================================================
+  matrix-with-include:
+    name: ${{ matrix.os }} - ${{ matrix.language }} ${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        language: [node, python]
+        include:
+          # Add specific configurations
+          - language: node
+            version: '18'
+            package-manager: npm
+          - language: python
+            version: '3.11'
+            package-manager: pip
+          # Add additional OS combinations
+          - os: windows-latest
+            language: node
+            version: '20'
+            package-manager: npm
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Display configuration
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Language: ${{ matrix.language }}"
+          echo "Version: ${{ matrix.version }}"
+          echo "Package Manager: ${{ matrix.package-manager }}"
+
+  # ============================================================================
+  # Matrix with Exclude - Skip specific combinations
+  # ============================================================================
+  matrix-with-exclude:
+    name: Test on ${{ matrix.os }} - Node ${{ matrix.node-version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [16, 18, 20]
+        exclude:
+          # Skip Node 16 on Windows
+          - os: windows-latest
+            node-version: 16
+          # Skip Node 20 on macOS
+          - os: macos-latest
+            node-version: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Run tests
+        run: |
+          echo "Testing on ${{ matrix.os }} with Node ${{ matrix.node-version }}"
+          node --version
+
+  # ============================================================================
+  # Matrix with fail-fast disabled - Continue on failure
+  # ============================================================================
+  matrix-fail-fast-disabled:
+    name: Build - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false  # Don't cancel other jobs if one fails
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build project
+        run: |
+          echo "Building on ${{ matrix.os }}"
+          # Even if one OS fails, others will continue
+
+  # ============================================================================
+  # Matrix with max-parallel - Limit concurrent jobs
+  # ============================================================================
+  matrix-max-parallel:
+    name: Deploy - ${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    
+    strategy:
+      max-parallel: 2  # Only run 2 jobs at a time
+      matrix:
+        environment: [dev, staging, qa, production]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy to ${{ matrix.environment }}
+        run: |
+          echo "Deploying to ${{ matrix.environment }}"
+          sleep 5  # Simulate deployment
+
+  # ============================================================================
+  # Complex Matrix - Multiple dimensions with include/exclude
+  # ============================================================================
+  complex-matrix:
+    name: ${{ matrix.os }} - ${{ matrix.browser }} - ${{ matrix.test-suite }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        browser: [chrome, firefox, edge]
+        test-suite: [unit, integration]
+        include:
+          # Add Safari only for macOS
+          - os: macos-latest
+            browser: safari
+            test-suite: unit
+          - os: macos-latest
+            browser: safari
+            test-suite: integration
+          # Add specific configuration for Chrome on Ubuntu
+          - os: ubuntu-latest
+            browser: chrome
+            test-suite: e2e
+            headless: true
+        exclude:
+          # Edge not available on Linux
+          - os: ubuntu-latest
+            browser: edge
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Display test configuration
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Browser: ${{ matrix.browser }}"
+          echo "Test Suite: ${{ matrix.test-suite }}"
+          echo "Headless: ${{ matrix.headless }}"
+
+  # ============================================================================
+  # Dynamic Matrix from JSON
+  # ============================================================================
+  generate-matrix:
+    name: Generate Dynamic Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+      - name: Set matrix values
+        id: set-matrix
+        run: |
+          # Generate dynamic matrix based on conditions
+          MATRIX='{"version": ["3.9", "3.10", "3.11"], "os": ["ubuntu-latest", "windows-latest"]}'
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  use-dynamic-matrix:
+    name: ${{ matrix.os }} - Python ${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    needs: generate-matrix
+    
+    strategy:
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.version }}
+      
+      - name: Display info
+        run: python --version
+
+  # ============================================================================
+  # Matrix for different build configurations
+  # ============================================================================
+  build-matrix:
+    name: Build - ${{ matrix.platform }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            os: ubuntu-latest
+            arch: x64
+            artifact: myapp-linux-x64
+          - platform: linux
+            os: ubuntu-latest
+            arch: arm64
+            artifact: myapp-linux-arm64
+          - platform: windows
+            os: windows-latest
+            arch: x64
+            artifact: myapp-windows-x64.exe
+          - platform: macos
+            os: macos-latest
+            arch: x64
+            artifact: myapp-macos-x64
+          - platform: macos
+            os: macos-latest
+            arch: arm64
+            artifact: myapp-macos-arm64
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build for ${{ matrix.platform }}
+        run: |
+          echo "Building for:"
+          echo "Platform: ${{ matrix.platform }}"
+          echo "Architecture: ${{ matrix.arch }}"
+          echo "Artifact name: ${{ matrix.artifact }}"
+          
+      - name: Upload artifact
+        run: |
+          echo "Would upload: ${{ matrix.artifact }}"
